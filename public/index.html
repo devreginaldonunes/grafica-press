@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GráficaPress - Sistema de Gerenciamento</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --light: #f3f4f6;
+      --gray: #6b7280;
+      --border: #e5e7eb;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--light);
+      color: #1f2937;
+    }
+
+    /* ============ NAVBAR ============ */
+    .navbar {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 1rem 2rem;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .navbar-user {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .btn-logout {
+      background: #dc2626;
+      border: none;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    .btn-logout:hover {
+      background: #b91c1c;
+    }
+
+    /* ============ CONTAINER ============ */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* ============ TELAS ============ */
+    .tela {
+      display: none;
+    }
+
+    .tela.ativa {
+      display: block;
+    }
+
+    /* ============ LOGIN ============ */
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      padding: 1rem;
+    }
+
+    .login-card {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 28rem;
+      padding: 2rem;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo-circulo {
+      width: 4rem;
+      height: 4rem;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .login-card h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .login-card p {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #374151;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: border 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .input-senha-container {
+      position: relative;
+    }
+
+    .toggle-senha {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--gray);
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-login:hover {
+      background: var(--primary-dark);
+    }
+
+    .error-msg {
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .credenciais {
+      background: var(--light);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    .credenciais p {
+      margin: 0.5rem 0;
+    }
+
+    .toggle-form {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .toggle-form button {
+      background: none;
+      border: none;
+      color: var(--primary);
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
+    /* ============ HEADER ============ */
+    .header {
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    /* ============ GRID ESTATÍSTICAS ============ */
+    .grid-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .card-stat {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      box-shadow: var(--shadow);
+      border-left: 4px solid;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-stat.blue { border-color: var(--primary); background: rgba(37, 99, 235, 0.05); }
+    .card-stat.yellow { border-color: var(--warning); background: rgba(245, 158, 11, 0.05); }
+    .card-stat.green { border-color: var(--success); background: rgba(16, 185, 129, 0.05); }
+    .card-stat.red { border-color: var(--danger); background: rgba(239, 68, 68, 0.05); }
+
+    .stat-info h3 {
+      font-size: 0.9rem;
+      color: var(--gray);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-valor {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .stat-icon {
+      font-size: 3rem;
+      opacity: 0.3;
+    }
+
+    /* ============ TABS ============ */
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+      background: white;
+      border: 1px solid var(--border);
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      color: var(--gray);
+    }
+
+    .tab-btn.ativo {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* ============ CARD ============ */
+    .card {
+      background: white;
+      border-radius: 0.75rem;
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-header h2 {
+      font-size: 1.5rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .btn-secondary {
+      background: #6b7280;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #4b5563;
+    }
+
+    /* ============ TABELA ============ */
+    .tabela-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: var(--light);
+      border-bottom: 2px solid var(--border);
+    }
+
+    th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--gray);
+    }
+
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody tr:hover {
+      background: var(--light);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-producao {
+      background: rgba(245, 158, 11, 0.2);
+      color: #92400e;
+    }
+
+    .badge-concluido {
+      background: rgba(16, 185, 129, 0.2);
+      color: #065f46;
+    }
+
+    .badge-atrasado {
+      background: rgba(239, 68, 68, 0.2);
+      color: #7f1d1d;
+    }
+
+    /* ============ FORMULÁRIO ============ */
+    .formulario {
+      max-width: 40rem;
+    }
+
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      font-family: inherit;
+      font-size: 1rem;
+      resize: vertical;
+      min-height: 5rem;
+    }
+
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .upload-area {
+      border: 2px dashed var(--primary);
+      border-radius: 0.75rem;
+      padding: 2rem;
+      text-align: center;
+      background: rgba(37, 99, 235, 0.05);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .upload-area:hover {
+      background: rgba(37, 99, 235, 0.1);
+      border-color: var(--primary-dark);
+    }
+
+    .upload-area input {
+      display: none;
+    }
+
+    .upload-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .form-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .form-buttons button {
+      flex: 1;
+      padding: 0.75rem;
+    }
+
+    /* ============ PEDIDO CARD ============ */
+    .pedido-card {
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s;
+    }
+
+    .pedido-card:hover {
+      box-shadow: var(--shadow-lg);
+    }
+
+    .pedido-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 1rem;
+    }
+
+    .pedido-titulo {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .pedido-descricao {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .pedido-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .pedido-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .pedido-label {
+      color: var(--gray);
+      font-size: 0.85rem;
+    }
+
+    .pedido-valor {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    /* ============ RESPONSIVO ============ */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .header h1 {
+        font-size: 1.75rem;
+      }
+
+      .grid-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .card-stat {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .navbar {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+
+      .navbar-user {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .tabs {
+        flex-wrap: wrap;
+      }
+
+      .pedido-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* ============ EMPTY STATE ============ */
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: var(--gray);
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--gray);
+    }
+
+    .spinner {
+      border: 3px solid var(--light);
+      border-top: 3px solid var(--primary);
+      border-radius: 50%;
+      width: 2rem;
+      height: 2rem;
+      animation: spin 1s linear infinite;
+      margin: 1rem auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <!-- TELA LOGIN -->
+  <div id="tela-login" class="tela ativa">
+    <div class="login-container">
+      <div class="login-card">
+        <div class="login-header">
+          <div class="logo-circulo">📄</div>
+          <h1>GráficaPress</h1>
+          <p>Secretaria de Educação - O.S</p>
+        </div>
+
+        <div id="erro-login" class="error-msg" style="display: none;"></div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="login-email" placeholder="seu@email.com">
+        </div>
+
+        <div class="form-group">
+          <label>Senha</label>
+          <div class="input-senha-container">
+            <input type="password" id="login-senha" placeholder="••••••••">
+            <button type="button" class="toggle-senha" onclick="toggleSenha()">👁️</button>
+          </div>
+        </div>
+
+        <button class="btn-login" onclick="fazerLogin()">Entrar</button>
+
+        <div class="toggle-form">
+          <p>Não tem conta? <button onclick="abrirRegistro()">Registre-se aqui</button></p>
+        </div>
+
+        <div class="credenciais">
+          <p><strong>Teste com:</strong></p>
+          <p>👤 Admin: admin@grafica.com / 123456</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA REGISTRO -->
+  <div id="tela-registro" class="tela">
+    <div class="login-container">
+      <div class="login-card">
+        <div class="login-header">
+          <div class="logo-circulo">📄</div>
+          <h1>Registrar</h1>
+          <p>Crie sua conta</p>
+        </div>
+
+        <div id="erro-registro" class="error-msg" style="display: none;"></div>
+
+        <div class="form-group">
+          <label>Nome Completo</label>
+          <input type="text" id="registro-nome" placeholder="Seu nome">
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="registro-email" placeholder="seu@email.com">
+        </div>
+
+        <div class="form-group">
+          <label>Departamento</label>
+          <input type="text" id="registro-departamento" placeholder="Seu departamento">
+        </div>
+
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="password" id="registro-senha" placeholder="••••••••">
+        </div>
+
+        <button class="btn-login" onclick="fazerRegistro()">Registrar</button>
+
+        <div class="toggle-form">
+          <p>Já tem conta? <button onclick="abrirLogin()">Faça login aqui</button></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <div id="navbar" style="display: none;">
+    <nav class="navbar">
+      <div class="navbar-brand">
+        📄 GráficaPress<span id="admin-label" style="margin-left: 1rem; font-size: 0.8rem; opacity: 0.8;"></span>
+      </div>
+      <div class="navbar-user">
+        <span>👤 <span id="usuario-nome"></span></span>
+        <button class="btn-logout" onclick="fazerLogout()">Sair</button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- TELA ADMIN DASHBOARD -->
+  <div id="tela-admin-dashboard" class="tela">
+    <div class="container">
+      <div class="header">
+        <h1>Painel de Administração</h1>
+      </div>
+
+      <div class="grid-stats" id="stats-admin">
+        <div class="card-stat blue">
+          <div class="stat-info">
+            <h3>Total de Pedidos</h3>
+            <div class="stat-valor" id="stat-total">0</div>
+          </div>
+          <div class="stat-icon">📋</div>
+        </div>
+        <div class="card-stat yellow">
+          <div class="stat-info">
+            <h3>Em Produção</h3>
+            <div class="stat-valor" id="stat-producao">0</div>
+          </div>
+          <div class="stat-icon">🖨️</div>
+        </div>
+        <div class="card-stat green">
+          <div class="stat-info">
+            <h3>Concluídos</h3>
+            <div class="stat-valor" id="stat-concluidos">0</div>
+          </div>
+          <div class="stat-icon">✅</div>
+        </div>
+        <div class="card-stat red">
+          <div class="stat-info">
+            <h3>Atrasados</h3>
+            <div class="stat-valor" id="stat-atrasados">0</div>
+          </div>
+          <div class="stat-icon">⏰</div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn ativo" onclick="abrirAbaAdmin('pedidos')">Pedidos</button>
+        <button class="tab-btn" onclick="abrirAbaAdmin('usuarios')">Usuários</button>
+      </div>
+
+      <!-- ABA PEDIDOS -->
+      <div id="aba-pedidos" class="card">
+        <div class="card-header">
+          <h2>Todos os Pedidos</h2>
+        </div>
+        <div id="pedidos-lista-admin" class="tabela-container">
+          <div class="loading"><div class="spinner"></div>Carregando...</div>
+        </div>
+      </div>
+
+      <!-- ABA USUÁRIOS -->
+      <div id="aba-usuarios" class="card" style="display: none;">
+        <div class="card-header">
+          <h2>Gerenciar Usuários</h2>
+        </div>
+        <div id="usuarios-lista" class="tabela-container">
+          <div class="loading"><div class="spinner"></div>Carregando...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA CLIENTE DASHBOARD -->
+  <div id="tela-cliente-dashboard" class="tela">
+    <div class="container">
+      <div class="header">
+        <h1>Meus Pedidos</h1>
+      </div>
+
+      <div class="grid-stats">
+        <div class="card-stat blue">
+          <div class="stat-info">
+            <h3>Total de Pedidos</h3>
+            <div class="stat-valor" id="stat-total-cliente">0</div>
+          </div>
+          <div class="stat-icon">📋</div>
+        </div>
+        <div class="card-stat yellow">
+          <div class="stat-info">
+            <h3>Em Produção</h3>
+            <div class="stat-valor" id="stat-producao-cliente">0</div>
+          </div>
+          <div class="stat-icon">🖨️</div>
+        </div>
+        <div class="card-stat green">
+          <div class="stat-info">
+            <h3>Concluídos</h3>
+            <div class="stat-valor" id="stat-concluidos-cliente">0</div>
+          </div>
+          <div class="stat-icon">✅</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Meus Pedidos</h2>
+          <button class="btn btn-primary" onclick="abrirNovoPedido()">+ Novo Pedido</button>
+        </div>
+        <div id="pedidos-lista-cliente">
+          <div class="loading"><div class="spinner"></div>Carregando...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA NOVO PEDIDO -->
+  <div id="tela-novo-pedido" class="tela">
+    <div class="container">
+      <div class="header">
+        <h1>Criar Novo Pedido</h1>
+      </div>
+
+      <div class="card formulario">
+        <div id="erro-pedido" class="error-msg" style="display: none;"></div>
+
+        <div class="form-group">
+          <label>Descrição do Pedido</label>
+          <textarea id="pedido-descricao" placeholder="Ex: Cartazes para campanha escolar"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Fazer Upload do PDF</label>
+          <div class="upload-area" onclick="document.getElementById('pedido-arquivo').click()">
+            <div class="upload-icon">📁</div>
+            <p id="arquivo-nome">Clique para selecionar PDF</p>
+            <p style="color: var(--gray); font-size: 0.85rem;">ou arraste o arquivo aqui</p>
+            <input type="file" id="pedido-arquivo" accept=".pdf">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Quantidade de Impressões</label>
+            <input type="number" id="pedido-quantidade" placeholder="1000" min="1">
+          </div>
+
+          <div class="form-group">
+            <label>Data de Entrega</label>
+            <input type="date" id="pedido-data">
+          </div>
+        </div>
+
+        <div class="form-buttons">
+          <button class="btn btn-primary" onclick="enviarPedido()">Enviar Pedido</button>
+          <button class="btn btn-secondary" onclick="abrirClienteDashboard()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    let token = localStorage.getItem('token');
+    let usuario = JSON.parse(localStorage.getItem('usuario') || 'null');
+    let arquivoSelecionado = null;
+
+    // ============ AUTENTICAÇÃO ============
+
+    function abrirLogin() {
+      document.getElementById('tela-login').classList.add('ativa');
+      document.getElementById('tela-registro').classList.remove('ativa');
+    }
+
+    function abrirRegistro() {
+      document.getElementById('tela-login').classList.remove('ativa');
+      document.getElementById('tela-registro').classList.add('ativa');
+    }
+
+    async function fazerLogin() {
+      const email = document.getElementById('login-email').value;
+      const senha = document.getElementById('login-senha').value;
+      const erroEl = document.getElementById('erro-login');
+
+      if (!email || !senha) {
+        erroEl.textContent = 'Preencha todos os campos';
+        erroEl.style.display = 'block';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_URL}/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, senha })
+        });
+
+        const dados = await res.json();
+
+        if (!res.ok) {
+          erroEl.textContent = dados.erro || 'Erro ao fazer login';
+          erroEl.style.display = 'block';
+          return;
+        }
+
+        token = dados.token;
+        usuario = dados.usuario;
+        localStorage.setItem('token', token);
+        localStorage.setItem('usuario', JSON.stringify(usuario));
+
+        erroEl.style.display = 'none';
+        abrirDashboard();
+      } catch (err) {
+        erroEl.textContent = 'Erro na conexão com o servidor';
+        erroEl.style.display = 'block';
+      }
+    }
+
+    async function fazerRegistro() {
+      const nome = document.getElementById('registro-nome').value;
+      const email = document.getElementById('registro-email').value;
+      const senha = document.getElementById('registro-senha').value;
+      const departamento = document.getElementById('registro-departamento').value;
+      const erroEl = document.getElementById('erro-registro');
+
+      if (!nome || !email || !senha) {
+        erroEl.textContent = 'Preencha todos os campos obrigatórios';
+        erroEl.style.display = 'block';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_URL}/registrar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome, email, senha, departamento })
+        });
+
+        const dados = await res.json();
+
+        if (!res.ok) {
+          erroEl.textContent = dados.erro || 'Erro ao registrar';
+          erroEl.style.display = 'block';
+          return;
+        }
+
+        token = dados.token;
+        usuario = dados.usuario;
+        localStorage.setItem('token', token);
+        localStorage.setItem('usuario', JSON.stringify(usuario));
+
+        erroEl.style.display = 'none';
+        abrirDashboard();
+      } catch (err) {
+        erroEl.textContent = 'Erro na conexão com o servidor';
+        erroEl.style.display = 'block';
+      }
+    }
+
+    function toggleSenha() {
+      const input = document.getElementById('login-senha');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
+    function fazerLogout() {
+      token = null;
+      usuario = null;
+      localStorage.removeItem('token');
+      localStorage.removeItem('usuario');
+      abrirLogin();
+    }
+
+    // ============ NAVEGAÇÃO ============
+
+    function abrirDashboard() {
+      document.getElementById('tela-login').classList.remove('ativa');
+      document.getElementById('tela-registro').classList.remove('ativa');
+      document.getElementById('navbar').style.display = 'block';
+      document.getElementById('usuario-nome').textContent = usuario.nome;
+
+      if (usuario.tipo === 'admin') {
+        document.getElementById('admin-label').textContent = '(ADMIN)';
+        document.getElementById('tela-admin-dashboard').classList.add('ativa');
+        carregarEstatisticasAdmin();
+        carregarPedidosAdmin();
+        carregarUsuarios();
+      } else {
+        document.getElementById('admin-label').textContent = '';
+        document.getElementById('tela-cliente-dashboard').classList.add('ativa');
+        carregarPedidosCliente();
+      }
+    }
+
+    function abrirAbaAdmin(aba) {
+      if (aba === 'pedidos') {
+        document.getElementById('aba-pedidos').style.display = 'block';
+        document.getElementById('aba-usuarios').style.display = 'none';
+        document.querySelectorAll('.tab-btn')[0].classList.add('ativo');
+        document.querySelectorAll('.tab-btn')[1].classList.remove('ativo');
+        carregarPedidosAdmin();
+      } else {
+        document.getElementById('aba-pedidos').style.display = 'none';
+        document.getElementById('aba-usuarios').style.display = 'block';
+        document.querySelectorAll('.tab-btn')[0].classList.remove('ativo');
+        document.querySelectorAll('.tab-btn')[1].classList.add('ativo');
+        carregarUsuarios();
+      }
+    }
+
+    function abrirNovoPedido() {
+      document.getElementById('tela-cliente-dashboard').classList.remove('ativa');
+      document.getElementById('tela-novo-pedido').classList.add('ativa');
+    }
+
+    function abrirClienteDashboard() {
+      document.getElementById('tela-novo-pedido').classList.remove('ativa');
+      document.getElementById('tela-cliente-dashboard').classList.add('ativa');
+      carregarPedidosCliente();
+    }
+
+    function abrirLogin() {
+      document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+      document.getElementById('navbar').style.display = 'none';
+      document.getElementById('tela-login').classList.add('ativa');
+    }
+
+    // ============ CARREGAMENTO DE DADOS ============
+
+    async function carregarEstatisticasAdmin() {
+      try {
+        const res = await fetch(`${API_URL}/estatisticas`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const dados = await res.json();
+
+        document.getElementById('stat-total').textContent = dados.total_pedidos || 0;
+        document.getElementById('stat-producao').textContent = dados.em_producao || 0;
+        document.getElementById('stat-concluidos').textContent = dados.concluidos || 0;
+        document.getElementById('stat-atrasados').textContent = dados.atrasados || 0;
+      } catch (err) {
+        console.error('Erro ao carregar estatísticas:', err);
+      }
+    }
+
+    async function carregarPedidosAdmin() {
+      try {
+        const res = await fetch(`${API_URL}/pedidos`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const pedidos = await res.json();
+
+        let html = '<table><thead><tr><th>ID</th><th>Cliente</th><th>Arquivo</th><th>Qtd</th><th>Status</th><th>Entrega</th><th>Ações</th></tr></thead><tbody>';
+
+        pedidos.forEach(p => {
+          html += `
+            <tr>
+              <td>#${p.id}</td>
+              <td>${p.cliente_nome}</td>
+              <td>${p.arquivo}</td>
+              <td>${p.quantidade}</td>
+              <td>
+                <select class="select" onchange="atualizarStatusPedido(${p.id}, this.value)">
+                  <option value="em_producao" ${p.status === 'em_producao' ? 'selected' : ''}>Em Produção</option>
+                  <option value="concluido" ${p.status === 'concluido' ? 'selected' : ''}>Concluído</option>
+                  <option value="atrasado" ${p.status === 'atrasado' ? 'selected' : ''}>Atrasado</option>
+                </select>
+              </td>
+              <td>${p.data_entrega}</td>
+              <td><button class="btn btn-danger" onclick="deletarPedido(${p.id})">Deletar</button></td>
+            </tr>
+          `;
+        });
+
+        html += '</tbody></table>';
+        document.getElementById('pedidos-lista-admin').innerHTML = pedidos.length === 0 
+          ? '<div class="empty-state"><div class="empty-state-icon">📭</div><p>Nenhum pedido registrado</p></div>'
+          : html;
+      } catch (err) {
+        console.error('Erro ao carregar pedidos:', err);
+      }
+    }
+
+    async function carregarPedidosCliente() {
+      try {
+        const res = await fetch(`${API_URL}/pedidos`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const pedidos = await res.json();
+
+        const emProducao = pedidos.filter(p => p.status === 'em_producao').length;
+        const concluidos = pedidos.filter(p => p.status === 'concluido').length;
+
+        document.getElementById('stat-total-cliente').textContent = pedidos.length;
+        document.getElementById('stat-producao-cliente').textContent = emProducao;
+        document.getElementById('stat-concluidos-cliente').textContent = concluidos;
+
+        let html = '';
+        pedidos.forEach(p => {
+          const statusBadge = p.status === 'concluido' ? 'badge-concluido' : 
+                            p.status === 'em_producao' ? 'badge-producao' : 'badge-atrasado';
+          const statusTexto = p.status === 'concluido' ? 'Concluído' : 
+                            p.status === 'em_producao' ? 'Em Produção' : 'Atrasado';
+
+          html += `
+            <div class="pedido-card">
+              <div class="pedido-header">
+                <div>
+                  <div class="pedido-titulo">Pedido #${p.id}</div>
+                  <div class="pedido-descricao">${p.descricao}</div>
+                </div>
+                <span class="badge ${statusBadge}">${statusTexto}</span>
+              </div>
+              <div class="pedido-grid">
+                <div class="pedido-info">
+                  <span class="pedido-label">Arquivo</span>
+                  <span class="pedido-valor">${p.arquivo}</span>
+                </div>
+                <div class="pedido-info">
+                  <span class="pedido-label">Quantidade</span>
+                  <span class="pedido-valor">${p.quantidade} unidades</span>
+                </div>
+                <div class="pedido-info">
+                  <span class="pedido-label">Data de Entrega</span>
+                  <span class="pedido-valor">${new Date(p.data_entrega).toLocaleDateString('pt-BR')}</span>
+                </div>
+                <div class="pedido-info">
+                  <span class="pedido-label">Pedido em</span>
+                  <span class="pedido-valor">${new Date(p.data_pedido).toLocaleDateString('pt-BR')}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        document.getElementById('pedidos-lista-cliente').innerHTML = pedidos.length === 0 
+          ? '<div class="empty-state"><div class="empty-state-icon">📭</div><p>Nenhum pedido realizado ainda</p></div>'
+          : html;
+      } catch (err) {
+        console.error('Erro ao carregar pedidos:', err);
+      }
+    }
+
+    async function carregarUsuarios() {
+      try {
+        const res = await fetch(`${API_URL}/usuarios`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const usuarios = await res.json();
+
+        let html = '<table><thead><tr><th>ID</th><th>Nome</th><th>Email</th><th>Departamento</th><th>Tipo</th></tr></thead><tbody>';
+
+        usuarios.forEach(u => {
+          html += `
+            <tr>
+              <td>#${u.id}</td>
+              <td>${u.nome}</td>
+              <td>${u.email}</td>
+              <td>${u.departamento || '-'}</td>
+              <td><span class="badge badge-concluido">Cliente</span></td>
+            </tr>
+          `;
+        });
+
+        html += '</tbody></table>';
+        document.getElementById('usuarios-lista').innerHTML = usuarios.length === 0 
+          ? '<div class="empty-state"><div class="empty-state-icon">👥</div><p>Nenhum usuário cliente registrado</p></div>'
+          : html;
+      } catch (err) {
+        console.error('Erro ao carregar usuários:', err);
+      }
+    }
+
+    // ============ AÇÕES ============
+
+    async function atualizarStatusPedido(id, novoStatus) {
+      try {
+        const res = await fetch(`${API_URL}/pedidos/${id}/status`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ status: novoStatus })
+        });
+
+        if (res.ok) {
+          carregarPedidosAdmin();
+          carregarEstatisticasAdmin();
+        }
+      } catch (err) {
+        console.error('Erro ao atualizar status:', err);
+      }
+    }
+
+    async function deletarPedido(id) {
+      if (!confirm('Tem certeza que deseja deletar este pedido?')) return;
+
+      try {
+        const res = await fetch(`${API_URL}/pedidos/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+          carregarPedidosAdmin();
+          carregarEstatisticasAdmin();
+        }
+      } catch (err) {
+        console.error('Erro ao deletar pedido:', err);
+      }
+    }
+
+    // ============ UPLOAD E PEDIDOS ============
+
+    document.getElementById('pedido-arquivo')?.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file && file.type === 'application/pdf') {
+        arquivoSelecionado = file;
+        document.getElementById('arquivo-nome').textContent = file.name;
+      } else {
+        alert('Por favor, selecione um arquivo PDF válido');
+        this.value = '';
+      }
+    });
+
+    async function enviarPedido() {
+      const descricao = document.getElementById('pedido-descricao').value;
+      const quantidade = document.getElementById('pedido-quantidade').value;
+      const data_entrega = document.getElementById('pedido-data').value;
+      const erroEl = document.getElementById('erro-pedido');
+
+      if (!arquivoSelecionado || !descricao || !quantidade || !data_entrega) {
+        erroEl.textContent = 'Preencha todos os campos!';
+        erroEl.style.display = 'block';
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('arquivo', arquivoSelecionado);
+      formData.append('descricao', descricao);
+      formData.append('quantidade', quantidade);
+      formData.append('data_entrega', data_entrega);
+
+      try {
+        const res = await fetch(`${API_URL}/pedidos`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+
+        const dados = await res.json();
+
+        if (!res.ok) {
+          erroEl.textContent = dados.erro || 'Erro ao criar pedido';
+          erroEl.style.display = 'block';
+          return;
+        }
+
+        alert('Pedido enviado com sucesso!');
+        document.getElementById('pedido-descricao').value = '';
+        document.getElementById('pedido-quantidade').value = '';
+        document.getElementById('pedido-data').value = '';
+        document.getElementById('arquivo-nome').textContent = 'Clique para selecionar PDF';
+        arquivoSelecionado = null;
+        erroEl.style.display = 'none';
+        abrirClienteDashboard();
+      } catch (err) {
+        erroEl.textContent = 'Erro na conexão com o servidor';
+        erroEl.style.display = 'block';
+      }
+    }
+
+    // ============ INICIALIZAÇÃO ============
+
+    if (token && usuario) {
+      abrirDashboard();
+    }
+  </script>
+</body>
+</html>
